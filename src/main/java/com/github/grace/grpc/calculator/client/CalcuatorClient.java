@@ -1,6 +1,7 @@
 package com.github.grace.grpc.calculator.client;
 
 import com.proto.calculator.CalculatorServiceGrpc;
+import com.proto.calculator.PrimeNumberDecompositionRequest;
 import com.proto.calculator.SumRequest;
 import com.proto.calculator.SumResponse;
 import io.grpc.ManagedChannel;
@@ -17,13 +18,23 @@ public class CalcuatorClient {
         //created a calculaorservice
         CalculatorServiceGrpc.CalculatorServiceBlockingStub calculatorClient = CalculatorServiceGrpc.newBlockingStub(channel);
 
-        SumRequest request = SumRequest.newBuilder()
-                .setFirstNumber(1)
-                .setSecondNumber(2)
-                .build();
-        //Call the RPC and get back a GreetResponse(protocol buffers)
-        SumResponse response = calculatorClient.sum(request);
-        System.out.println(request.getFirstNumber() + "+"+request.getSecondNumber()+"="+response.getSumResult());
+//        SumRequest request = SumRequest.newBuilder()
+//                .setFirstNumber(1)
+//                .setSecondNumber(2)
+//                .build();
+//        //Call the RPC and get back a GreetResponse(protocol buffers)
+//        SumResponse response = calculatorClient.sum(request);
+//        System.out.println(request.getFirstNumber() + "+"+request.getSecondNumber()+"="+response.getSumResult());
+
+       //stream server
+        Integer number=567890;
+        calculatorClient.primeNumberDecomposition(PrimeNumberDecompositionRequest.newBuilder()
+                .setNumber(number)
+                .build())
+                .forEachRemaining(primeNumberDecompositionResponse -> {
+                    System.out.println(primeNumberDecompositionResponse.getPrimeFactor());
+                });
+
         channel.shutdown();
     }
 }
